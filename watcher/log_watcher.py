@@ -3,13 +3,13 @@ import re
 from pathlib import Path
 from mcfetch import Player
 
-
 from api.helpers import PlayerInfo
 from overlay.display import get_prestige_color, get_displayname
 from overlay.cfg import config
 
 
 PLAYER_REGEX = re.compile(r"Players in this game:\s*(.*)")
+
 
 async def build_player_data(players):
     result = []
@@ -19,11 +19,14 @@ async def build_player_data(players):
             uuid = Player(player=player).uuid
             stats = await PlayerInfo.fetch(uuid)
 
-            if not all(isinstance(x, dict) for x in (
-                stats.player_info,
-                stats.overall_stats,
-                stats.game_stats,
-            )):
+            if not all(
+                isinstance(x, dict)
+                for x in (
+                    stats.player_info,
+                    stats.overall_stats,
+                    stats.game_stats,
+                )
+            ):
                 result.append((f"&e[Nicked] &7{player}", None))
                 continue
 
@@ -59,6 +62,10 @@ async def watch_log(overlay):
             file_pos = path.stat().st_size
             last_path = path
             continue
+
+        size = path.stat().st_size
+        if size < file_pos:
+            file_pos = 0
 
         with path.open("r", encoding="utf-8", errors="ignore") as f:
             f.seek(file_pos)

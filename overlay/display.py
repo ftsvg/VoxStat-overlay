@@ -17,7 +17,8 @@ def get_prestige_color(level: int) -> str:
         1000: ("&c", "&6", "&e", "&a", "&b", "&d", "&5"),
     }
 
-    level_str = f"[{level}✫]"
+    star = "✪" if level >= 1100 else "✫"
+    level_str = f"[{level}{star}]"
 
     if level < 1000:
         for threshold in sorted(prestige_map.keys(), reverse=True):
